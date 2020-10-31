@@ -1,0 +1,35 @@
+.heading {
+  color: black;
+  text-align: center;
+  font-size: 32px;
+  overflow: hidden;
+  padding: 60px;
+}
+
+.fundingStatus {
+  float: right;
+  padding: 0px, 18px;
+}
+
+.green {
+  color: #009E74;
+}
+
+.label {
+  color: grey;
+  font-size: 14px;
+}
+
+.dark-grey {
+  color: rgb(44, 43, 43);
+}
+
+.grey {
+  color: grey;
+}
+
+.data {
+  font-size: 28px;
+  text-align: left;
+  position: relative;
+}

@@ -1,8 +1,7 @@
 let mongoose = require('mongoose');
-let data = require('./dataGeneration.js');
+let database = require('./dataGeneration.js');
 
-
-const db = mongoose.connect('mongodb://localhost/videoHeader', {useNewUrlParser: true, useUnifiedTopology: true})
+const db = mongoose.connect('mongodb://localhost/header', {useNewUrlParser: true, useUnifiedTopology: true})
   .catch(error => handleError(error));
 const connection = mongoose.connection;
 connection.on('error', () => {
@@ -14,47 +13,56 @@ connection.once('open', () => {
 const { Schema } = mongoose;
 
 let headerSchema = {
+  identifier: Number,
   backing: {
     fundingGoal: Number,
-    pledged: Number,
+    amountFunded: Number,
+    newFundersPercent: Number,
     backers: Number,
     daysRemaining: Number,
     fundingStatus: {
       plan: String,
       endDate: Date,
       alreadyFunded: String,
+      title: String,
+      headline: String
     }
   },
   header: {
-    title: String,
-    headline: String,
     videoUrl: String,
     thumbnail: String,
   }
 };
 
-console.log('data ', data.dataResults[0]);
-const MyModel = mongoose.model('headerData', new Schema (headerSchema));
+const HeaderModel = mongoose.model('headerData', new Schema (headerSchema));
 let SeedData = [];
-for (let i = 0; i < data.length; i++) {
-  seedData.push(new MyModel(data).save());
-}
 
-//iterate 100 times inputing data into an instance of mymodel
-//promimse all to save all instances
+database.video()
+  .then(() => {
+    HeaderModel.find({})
+  .then((requestData) => {
+    if (requestData.length < 100) {
+      for (let i = 0; i < 100; i++) {
+        let generatedData = database.objectCreation(i);
+        let currentModel = new HeaderModel(generatedData);
+        SeedData.push(currentModel.save());
+      }
+    }
+  })
+  .then(() => {
+    Promise.all(SeedData);
+  })
+  .catch((err) => {
+    throw new Error(err);
+  });
+  })
+  .catch((err) => {
+    console.log('err in youtube api request', err);
+  })
 
-// var seeds = listings.map((listing) => {
-//     counter++;
-//       listing.imageUrl = images[counter];
-//         listing.address = addresses[counter];
-//           listing.zipcode = zipcodes[zipcodeCounter()];
-//             listing.houseId = counter;
-//               return new Listings(listing).save();});
-//               Promise.all(seeds)
-//                 .then(() => {
-//                       db.disconnect(()=> {
-//                               console.log('Database Seeded');
-//                                 });
-//                                 });
 
+let getDbData = (id) => {
+  return HeaderModel.find({identifier: id});
+};
 
+module.exports = {getDbData, HeaderModel};

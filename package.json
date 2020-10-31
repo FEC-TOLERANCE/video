@@ -10,15 +10,40 @@
   "scripts": {
     "mongo": "brew services start mongodb-community@4.4",
     "stop-mongo": "brew services stop mongodb-community@4.4",
-    "seed": "nodemon ./database/index.js"
+    "seed": "nodemon ./database/index.js",
+    "build": "webpack -d --watch",
+    "start": "pm2-runtime start server/index.js --watch",
+    "test": "jest --detectOpenHandles",
+    "test-coverage": "jest --collect-coverage"
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "css": "^3.0.0",
     "express": "^4.17.1",
+    "jquery": "^3.5.1",
+    "loader": "^2.1.1",
+    "mongoose": "^5.10.9",
     "node": "^14.11.0",
-    "react": "^16.13.1"
+    "nodemon": "^2.0.5",
+    "nvm": "0.0.4",
+    "path": "^0.12.7",
+    "pm2": "^4.5.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "eslint-config-hackreactor": "git://github.com/reactorcore/eslint-config-hackreactor"
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^5.0.0",
+    "eslint-config-hackreactor": "git://github.com/reactorcore/eslint-config-hackreactor",
+    "faker": "^5.1.0",
+    "jest": "^26.5.2",
+    "style-loader": "^2.0.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }
