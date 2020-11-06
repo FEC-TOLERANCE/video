@@ -20,6 +20,9 @@ let headerSchema = {
     newFundersPercent: Number,
     backers: Number,
     daysRemaining: Number,
+    description: String,
+    title: String,
+    headline: String,
     fundingStatus: {
       plan: String,
       endDate: Date,
@@ -37,9 +40,7 @@ let headerSchema = {
 const HeaderModel = mongoose.model('headerData', new Schema (headerSchema));
 let SeedData = [];
 
-database.video()
-  .then(() => {
-    HeaderModel.find({})
+HeaderModel.find({})
   .then((requestData) => {
     if (requestData.length < 100) {
       for (let i = 0; i < 100; i++) {
@@ -55,11 +56,6 @@ database.video()
   .catch((err) => {
     throw new Error(err);
   });
-  })
-  .catch((err) => {
-    console.log('err in youtube api request', err);
-  })
-
 
 let getDbData = (id) => {
   return HeaderModel.find({identifier: id});

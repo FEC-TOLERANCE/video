@@ -1,3 +1,18 @@
+#header {
+  font-family: "Maison Neue" sans-serif;
+}
+
+#progress {
+  width: 100%;
+  /* background-color:grey; */
+  background-color: #009E74;
+  height: 0.6rem;
+}
+
+#progressBar {
+  background-color: #009E74;
+}
+
 .heading {
   color: black;
   text-align: center;
@@ -6,6 +21,9 @@
   padding: 60px;
 }
 
+.description {
+  font-size: 18px;
+}
 .fundingStatus {
   float: right;
   padding: 0px, 18px;
@@ -32,4 +50,46 @@
   font-size: 28px;
   text-align: left;
   position: relative;
+}
+
+.value {
+  font-size: 28px;
+}
+
+.deadline {
+  font-size: 12px;
+}
+
+.button {
+  background-color:  #009E74;
+  color: white;
+  border: 1px solid  #009E74;
+  font-size: 1.6rem;
+}
+
+/* .fa-bookmark {
+} */
+
+.remind {
+  background-color: white;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.fa-twitter {
+  color: lightblue;
+}
+
+.fa-facebook {
+  color: blue;
+}
+
+.fa-envelope {
+  color: grey;
+}
+
+.fa-bookmark {
+  color: grey;
 }

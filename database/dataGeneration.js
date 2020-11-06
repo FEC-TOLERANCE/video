@@ -82,6 +82,7 @@ let description = (length) => {
   }
   if (results[results.length - 1] === ',') {
     results += descriptionList[(Math.floor(Math.random() * (descriptionList.length)))].toLowerCase() + '.';
+    return results;
   } else if (results[results.length - 1] === '.' || results[results.length - 1] === '?') {
     return results;
   } else {
@@ -95,7 +96,7 @@ let video = () => {
   return axios.get('https://www.googleapis.com/youtube/v3/search', {
     params: {
       key: key.key,
-      maxResults: 100,
+      maxResults: 1,
       q: 'dogs',
     }
       .then((data) => {
@@ -106,10 +107,6 @@ let video = () => {
       })
   });
 };
-video()
-  .then(() => {
-
-  })
 
 let objectCreation = (counter) => {
   let fundingGoal = randomUpTo(100000);
@@ -118,7 +115,7 @@ let objectCreation = (counter) => {
   let days = randomUpTo(200);
   let headline = description(randomUpTo(40));
   let header = title(randomUpTo(7));
-  let paragraph = description(randomUpTo(500));
+  let paragraph = description(randomUpTo(40));
   let endDate = date(true);
   let percentNew = randomUpTo(100) / 100;
 
@@ -134,10 +131,10 @@ let objectCreation = (counter) => {
         daysRemaining: days,
         endDate: endDate,
         title: header,
-        headline: paragraph
+        headline: headline
       },
       header: {
-        videoUrl: videoArray,
+        videoUrl: 'https://www.youtube.com/watch?v=fBYvHHT8fdE',
         thumbnail: 'thumbnail'
       }
     };
@@ -146,4 +143,4 @@ let objectCreation = (counter) => {
   return generateData();
 };
 
-module.exports = {objectCreation, video};
+module.exports.objectCreation = objectCreation;
