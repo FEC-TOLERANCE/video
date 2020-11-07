@@ -1,12 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import css from '../dist/styles.css';
 import $ from 'jquery';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faLink } from '@fortawesome/free-solid-svg-icons';
 const axios = require('axios');
 
-class Header extends React.Component {
+class Video extends React.Component {
   constructor(props) {
     super(props);
     this.getItemId = this.getItemId.bind(this);
@@ -71,13 +68,13 @@ class Header extends React.Component {
   render() {
     return (
       <div className="video">
-        
+
       </div>
     );
   }
 }
 
-ReactDOM.render(<Header />, document.getElementById('header'));
+ReactDOM.render(<Video />, document.getElementById('video'));
 
 
 

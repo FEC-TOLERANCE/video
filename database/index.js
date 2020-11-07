@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let database = require('./dataGeneration.js');
 
-const db = mongoose.connect('mongodb://localhost/header', {useNewUrlParser: true, useUnifiedTopology: true})
+const db = mongoose.connect('mongodb://localhost/video', {useNewUrlParser: true, useUnifiedTopology: true})
   .catch(error => handleError(error));
 const connection = mongoose.connection;
 connection.on('error', () => {
@@ -12,42 +12,43 @@ connection.once('open', () => {
 });
 const { Schema } = mongoose;
 
-let headerSchema = {
+let videoSchema = {
   identifier: Number,
-  backing: {
-    fundingGoal: Number,
-    amountFunded: Number,
-    newFundersPercent: Number,
-    backers: Number,
-    daysRemaining: Number,
-    description: String,
-    title: String,
-    headline: String,
-    fundingStatus: {
-      plan: String,
-      endDate: Date,
-      alreadyFunded: String,
-      title: String,
-      headline: String
-    }
-  },
-  header: {
-    videoUrl: String,
+  location: String,
+  itemType: String,
+  snippet: {
+    url: String,
     thumbnail: String,
   }
 };
 
-const HeaderModel = mongoose.model('headerData', new Schema (headerSchema));
+const VideoModel = mongoose.model('videoData', new Schema (videoSchema));
 let SeedData = [];
 
-HeaderModel.find({})
+VideoModel.find({})
   .then((requestData) => {
     if (requestData.length < 100) {
-      for (let i = 0; i < 100; i++) {
-        let generatedData = database.objectCreation(i);
-        let currentModel = new HeaderModel(generatedData);
-        SeedData.push(currentModel.save());
-      }
+      let youtubeData = [];
+      database.video()
+        .then((data) => {
+          // console.log('youtube data', data.data.items);
+          for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < data.data.items.length; j++) {
+              youtubeData.push(data.data.items[j]);
+            }
+          }
+          youtubeData.push(data.data.items);
+          youtubeData.push(data.data.items);
+          console.log(youtubeData.length);
+          for (let i = 0; i < 100; i++) {
+            let generatedData = database.objectCreation(i, youtubeData);
+            let currentModel = new VideoModel(generatedData);
+            SeedData.push(currentModel.save());
+          }
+        })
+        .catch((err) => {
+          console.log('err seeding video', err);
+        })
     }
   })
   .then(() => {
@@ -58,7 +59,7 @@ HeaderModel.find({})
   });
 
 let getDbData = (id) => {
-  return HeaderModel.find({identifier: id});
+  return VideoModel.find({identifier: id});
 };
 
-module.exports = {getDbData, HeaderModel};
+module.exports = {getDbData, VideoModel};
