@@ -1,169 +1,88 @@
-let axios = require('axios');
-var randomUpTo = (num) => {
-  let numStr = Math.floor(Math.random() * Math.floor(num));
+
+const axios = require('axios');
+const key = require('../config.js');
+
+let randomUpTo = (num) => {
+  let numStr = Math.floor(Math.random() * (num));
   let strNoCommas = '';
-  // console.log('numStr', numStr);
-  // for (let i = 0; i < numStr.length; i++) {
-  //   if (numStr[i] !== ',') {
-  //     strNoCommas += numStr[i];
-  //   }
-  // }
-  // let number = strNoCommas;
-  // console.log('number', number);
   return numStr;
 };
-let key = require('../config.js');
 
-var date = (future) => {
-  if (future) {
-    var month = Math.floor(Math.random() * Math.floor(12));
-    var day = Math.floor(Math.random() * Math.floor(31));
-    var year = '202' + Math.floor(Math.random() * Math.floor(8) + 1);
-    return month + '.' + day + '.' + year;
-  } else {
-    var month = Math.floor(Math.random() * Math.floor(12));
-    var day = Math.floor(Math.random() * Math.floor(31));
-    var year = '201' + Math.floor(Math.random() * Math.floor(9));
-    return month + '.' + day + '.' + year;
+let number = (length, decimals) => {
+  let value = [];
+  let afterDecimal = [];
+  for (let i = 0; i < length; i++) {
+    value.push(Math.floor(Math.random() * (9)));
   }
-};
-
-var number = (length, decimals) => {
-  var value = [];
-  var afterDecimal = [];
-  for (var i = 0; i < length; i++) {
-    value.push(Math.floor(Math.random() * Math.floor(9)));
-  }
-  for (var j = 0; j < decimals; j++) {
-    afterDecimal.push(Math.floor(Math.random() * Math.floor(9)));
+  for (let j = 0; j < decimals; j++) {
+    afterDecimal.push(Math.floor(Math.random() * (9)));
   }
   afterDecimal = afterDecimal.join();
   value = value.join();
   return value;
 };
 
-var names = (count) => {
-  //need to input first name and last name list
-  var results = [];
-  for (var i = 0; i < count; i++) {
-    var name = '';
-    name += (firstNameList[(Math.floor(Math.random() * Math.floor(firstNameList.length)))]);
-    name += ' ';
-    name += (lastNameList[(Math.floor(Math.random() * Math.floor(lastNameList.length)))])
-    results.push(name);
-  }
-  return results.join();
-};
 
-var title = (length) => {
-  var results = '';
-  var titleList = ['here', 'is', 'a', 'list', 'of', 'titles'];
-  for (var i = 0; i < length; i++) {
-    results += titleList[(Math.floor(Math.random() * Math.floor(titleList.length)))]
+let title = (length) => {
+  let results = '';
+  let titleList = 'The juxtaposition of images in the news of farmers destroying crops and dumping milk with empty supermarket shelves or hungry Americans lining up for hours at food banks tells a story of economic efficiency gone mad. Today the US actually has two separate food chains, each supplying roughly half of the market. The retail food chain links one set of farmers to grocery stores, and a second chain links a different set of farmers to institutional purchasers of food, such as restaurants, schools, and corporate offices. With the shutting down of much of the economy, as Americans stay home, this second food chain has essentially collapsed. But because of the way the industry has developed over the past several decades, it’s virtually impossible to reroute food normally sold in bulk to institutions to the retail outlets now clamoring for it. There’s still plenty of food coming from American farms, but no easy way to get it where it’s needed.';
+  titleList = titleList.split(' ');
+  for (let i = 0; i < length; i++) {
+    results += titleList[(Math.floor(Math.random() * (titleList.length)))];
     results += ' ';
   }
   return results;
 };
 
-var description = (length) => {
-  var results = '';
-  var descriptionList = ['this', 'is', 'random', 'words'];
-  for (var i = 0; i < length; i++) {
-    if ((Math.floor(Math.random() * Math.floor(15))) === 5) {
-      results += '.';
-    } else if ((Math.floor(Math.random() * Math.floor(25))) === 5) {
-      results += ',';
-    } else if ((Math.floor(Math.random() * Math.floor(40))) === 5) {
-      results += '?';
-    } else if ((Math.floor(Math.random() * Math.floor(200))) === 5) {
-      results += '/n';
-    } else if (results[i - 4] === '/' && results[i - 3] ==='n') {
-      results += '   ' + descriptionList[(Math.floor(Math.random() * Math.floor(descriptionList.length)))].toUpperCase();
-    } else if (results[i - 1] === '.' || results[i - 1] === '?') {
-      results += ' ' + descriptionList[(Math.floor(Math.random() * Math.floor(descriptionList.length)))].toUpperCase();
-    } else {
-      results += ' ' + descriptionList[(Math.floor(Math.random() * Math.floor(descriptionList.length)))].toLowerCase();
-    }
+let city = (length) => {
+  let results = '';
+  let state = 'WA GA VA PA MN MI NY CA OR NV FL OK TX AZ AK HI'
+  let city = 'Vancouver Phoenix Atlanta Minneapolis Athens London Portland Seattle Fargo Syracuse Rome Miami Orlando Birmingham Kennesaw Lawrence';
+  cityList = city.split(' ');
+  let stateList = state.split(' ');
+  for (let i = 0; i < length; i++) {
+    results += cityList[randomUpTo(15)] + ' ,';
+    results += stateList[randomUpTo(15)];
   }
-  if (results[results.length - 1] === ',') {
-    results += descriptionList[(Math.floor(Math.random() * Math.floor(descriptionList.length)))].toLowerCase() + '.';
-  } else if (results[results.length - 1] === '.' || results[results.length - 1] === '?') {
-    return results;
-  } else {
-    return results + '.';
-  }
+  return results;
 };
 
 let videoArray = [];
 
-var video = (count) => {
-  //query youtube with random search term
-  axios.get('https://www.googleapis.com/youtube/v3/search', {
+let video = () => {
+  return axios.get('https://www.googleapis.com/youtube/v3/search', {
     params: {
+      part: 'snippet',
       key: key.key,
       maxResults: 100,
-      q: 'dogs',
+      q: '',
+      type: 'video',
+      videoEmbeddable: 'true'
     }
-  })
-    .then((videoData) => {
-      // console.log('videoData', videoData.data);
-    })
-    .catch((err) => {
-      console.log('err', err);
-    });
-};
+  });
+}
 
-// var image = (count) => {
-//   //query sploosh for image based on random word
-// };
-
-var currency = () => {
-  var currencyOptions = ['USD', 'EUR', 'AUD', 'GBP', 'JPY', 'CHF', 'AFN', 'ALL'];
-  return currencyOptions[(Math.floor(Math.random() * Math.floor(currencyOptions.length)))];
-};
-
-let counter = 0;
-var objectCreation = () => {
-  // var fundingGoal = number(4 + randomUpTo(5), 0);
-  var fundingGoal = randomUpTo(100000)
-  var pledged = randomUpTo(100000);
-  // if (randomUpTo(5) === 4) {
-  //   pledged = randomUpTo(10) * fundingGoal;
-  // } else {
-  //   pledged = Math.random() * fundingGoal;
-  // }
-  var backers = randomUpTo(50000);
-  var days = randomUpTo(200);
-  var headline = description(randomUpTo(40));
-  var header = title(randomUpTo(7));
-  var paragraph = description(randomUpTo(500));
-  var endDate = date(true);
+let objectCreation = (counter, videoArray) => {
+  console.log('counter', counter);
+  let videoUrl = videoArray[counter].id.videoId;
+  let thumb = videoArray[counter].snippet.thumbnails.medium.url;
+  let type = title(1);
+  // let city = city();
 
   let generateData = () => {
-    video();
-    counter++;
-    var randomizedData = {
-      id: counter,
-      backing: {
-        fundingGoal: fundingGoal,
-        pledged: pledged,
-        backers: backers,
-        description: paragraph,
-        daysRemaining: days,
-        endDate: endDate,
-      },
-      header: {
-        title: header,
-        videoData: videoArray[counter],
+    let randomizedData = {
+      identifier: counter,
+      location: 'New York, NY',
+      itemType: type,
+      snippet: {
+        url: videoUrl,
+        thumbnail: thumb,
       }
     };
     return randomizedData;
   };
   return generateData();
 };
-let dataResults = [];
-for (let i = 0; i < 3; i++) {
-  dataResults.push(objectCreation());
-}
 
-module.exports.dataResults = dataResults;
+module.exports = {objectCreation, video}
+

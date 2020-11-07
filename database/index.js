@@ -1,8 +1,7 @@
 let mongoose = require('mongoose');
-let data = require('./dataGeneration.js');
+let database = require('./dataGeneration.js');
 
-
-const db = mongoose.connect('mongodb://localhost/videoHeader', {useNewUrlParser: true, useUnifiedTopology: true})
+const db = mongoose.connect('mongodb://localhost/video', {useNewUrlParser: true, useUnifiedTopology: true})
   .catch(error => handleError(error));
 const connection = mongoose.connection;
 connection.on('error', () => {
@@ -13,48 +12,54 @@ connection.once('open', () => {
 });
 const { Schema } = mongoose;
 
-let headerSchema = {
-  backing: {
-    fundingGoal: Number,
-    pledged: Number,
-    backers: Number,
-    daysRemaining: Number,
-    fundingStatus: {
-      plan: String,
-      endDate: Date,
-      alreadyFunded: String,
-    }
-  },
-  header: {
-    title: String,
-    headline: String,
-    videoUrl: String,
+let videoSchema = {
+  identifier: Number,
+  location: String,
+  itemType: String,
+  snippet: {
+    url: String,
     thumbnail: String,
   }
 };
 
-console.log('data ', data.dataResults[0]);
-const MyModel = mongoose.model('headerData', new Schema (headerSchema));
+const VideoModel = mongoose.model('videoData', new Schema (videoSchema));
 let SeedData = [];
-for (let i = 0; i < data.length; i++) {
-  seedData.push(new MyModel(data).save());
-}
 
-//iterate 100 times inputing data into an instance of mymodel
-//promimse all to save all instances
+VideoModel.find({})
+  .then((requestData) => {
+    if (requestData.length < 100) {
+      let youtubeData = [];
+      database.video()
+        .then((data) => {
+          // console.log('youtube data', data.data.items);
+          for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < data.data.items.length; j++) {
+              youtubeData.push(data.data.items[j]);
+            }
+          }
+          youtubeData.push(data.data.items);
+          youtubeData.push(data.data.items);
+          console.log(youtubeData.length);
+          for (let i = 0; i < 100; i++) {
+            let generatedData = database.objectCreation(i, youtubeData);
+            let currentModel = new VideoModel(generatedData);
+            SeedData.push(currentModel.save());
+          }
+        })
+        .catch((err) => {
+          console.log('err seeding video', err);
+        })
+    }
+  })
+  .then(() => {
+    Promise.all(SeedData);
+  })
+  .catch((err) => {
+    throw new Error(err);
+  });
 
-// var seeds = listings.map((listing) => {
-//     counter++;
-//       listing.imageUrl = images[counter];
-//         listing.address = addresses[counter];
-//           listing.zipcode = zipcodes[zipcodeCounter()];
-//             listing.houseId = counter;
-//               return new Listings(listing).save();});
-//               Promise.all(seeds)
-//                 .then(() => {
-//                       db.disconnect(()=> {
-//                               console.log('Database Seeded');
-//                                 });
-//                                 });
+let getDbData = (id) => {
+  return VideoModel.find({identifier: id});
+};
 
-
+module.exports = {getDbData, VideoModel};
