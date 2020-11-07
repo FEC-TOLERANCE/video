@@ -72,7 +72,7 @@ let objectCreation = (counter, videoArray) => {
   let generateData = () => {
     let randomizedData = {
       identifier: counter,
-      location: 'NY',
+      location: 'New York, NY',
       itemType: type,
       snippet: {
         url: videoUrl,

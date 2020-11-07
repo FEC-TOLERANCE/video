@@ -7,68 +7,56 @@ class Video extends React.Component {
   constructor(props) {
     super(props);
     this.getItemId = this.getItemId.bind(this);
-    this.changeProgress = this.changeProgress.bind(this);
     this.getItemId();
 
     this.state = {
-      itemId: 1,
-      fundingGoal: 100,
-      amountFunded: 100,
-      newFundersPercent: 0.5,
-      backers: 100,
-      description: 'description',
-      daysRemaining: 10,
-      endDate: '1/1/2020',
-      title: 'title',
-      headline: 'paragraph'
+      identifier: 0,
+      location: "NY",
+      itemType: "tolerance",
+      snippets: {
+        url: '',
+        thumbnail: ''
+      }
     };
   }
 
   getItemId() {
     let splitComponentUrl = window.location.href.split('/');
-    let urlWithoutEndpoint = splitComponentUrl[0] + '//' + splitComponentUrl[2].slice(0, 12) + '04';
-    let endpoint = '/funding/' + splitComponentUrl[3];
+    let urlWithoutEndpoint = splitComponentUrl[0] + '//' + splitComponentUrl[2].slice(0, 12) + '05';
+    let endpoint = '/video/' + splitComponentUrl[3];
     axios.get(urlWithoutEndpoint + endpoint)
-      .then((fundingData) => {
-        console.log('fundingData', fundingData);
+      .then((videoData) => {
+        console.log('videoData', videoData);
         this.setState({
-          'fundingGoal': fundingData.data.backing.fundingGoal,
-          'amountFunded': fundingData.data.backing.amountFunded,
-          'backers': fundingData.data.backing.backers,
-          'description': fundingData.data.backing.description,
-          'title': fundingData.data.backing.title,
-          'backers': fundingData.data.backing.backers,
-          'daysRemaining': fundingData.data.backing.daysRemaining,
+          itemType: videoData.data.itemType,
+          snippets: {
+            url: 'http://www.youtube.com/embed/' + videoData.data.snippet.url,
+            thumbnail: videoData.data.snippet.thumbnail
+          }
         });
-        this.changeProgress();
       })
       .catch((err) => {
         throw new Error(err);
       });
   }
 
-  changeProgress() {
-    let element = document.getElementById("progressBar");
-    console.log('element', element);
-    let percent = this.state.fundingGoal / this.state.amountFunded;
-    console.log('percent', percent);
-    if (percent < 1) {
-      console.log('element.style.width', element.style.width);
-      element.style.width = percent * 100 + "%";
-      console.log('element.style.width', element.style.width);
-    } else {
-      element.style.width = 100 + '%';
-    }
-  }
-
   componentDidMount() {
-    this.changeProgress();
   }
 
   render() {
     return (
       <div className="video">
-
+        <iframe className="video" width="500" height="300" src={this.state.snippets.url}></iframe>
+        <div className="video information">
+          <span>
+            <a href="#" className="fa fa-compass"></a>
+            <span className="label type">{this.state.itemType}</span>
+          </span>
+          <span className="location">
+            <a href="#" className="fa fa-map-marker"></a>
+            <span className="label location">{this.state.location}</span>
+          </span>
+        </div>
       </div>
     );
   }

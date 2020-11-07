@@ -12,7 +12,7 @@ app.use(express.static(__dirname + '/../client/dist'));
 
 app.use('/:id', express.static(__dirname + '/../client/dist'));
 
-app.get('/funding/:id', (req, res) => {
+app.get('/video/:id', (req, res) => {
   let id = parseInt(req.params.id);
   if (typeof id !== 'number') {
     res.status(400).send('invalid id, enter number');
@@ -32,22 +32,6 @@ app.get('/funding/:id', (req, res) => {
         throw new Error(err);
       });
   }
-});
-
-app.get('/header/:id', (req, res) => {
-  let id = parseInt(req.params.id);
-  if (typeof id !== 'number') {
-    res.status(400).send('invalid id, enter number');
-  }
-  db.getDbData(id)
-    .then((data) => {
-      res.status(200);
-      res.json(data[0]);
-    })
-    .catch((err) => {
-      res.setStatus(500);
-      throw new Error(err);
-    });
 });
 
 
